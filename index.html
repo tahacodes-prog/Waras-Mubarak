@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Waras Mubarak</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Poppins',sans-serif;}
+body{overflow-x:hidden;color:white;background:black}
+
+/* ===== CINEMATIC INTRO ===== */
+.intro{
+  position:fixed;
+  inset:0;
+  background:radial-gradient(circle at center,#111,#000);
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+  z-index:9999;
+}
+
+.intro-typing{
+  font-size:clamp(28px,5vw,50px);
+  margin-bottom:40px;
+  min-height:60px;
+  border-right:3px solid white;
+  animation:blink 0.7s infinite;
+}
+
+.loading-container{
+  width:300px;
+  height:6px;
+  background:rgba(255,255,255,0.2);
+  border-radius:10px;
+  overflow:hidden;
+  margin-bottom:40px;
+}
+
+.loading-bar{
+  width:0%;
+  height:100%;
+  background:linear-gradient(90deg,#ff4e91,#6c5ce7);
+  transition:width 0.2s linear;
+}
+
+.countdown{
+  font-size:clamp(40px,8vw,80px);
+  font-weight:700;
+  margin-bottom:30px;
+  opacity:0;
+  transition:0.5s;
+}
+
+.enter-btn{
+  padding:14px 40px;
+  border-radius:50px;
+  border:1px solid white;
+  background:transparent;
+  color:white;
+  cursor:pointer;
+  font-size:16px;
+  letter-spacing:2px;
+  opacity:0;
+  transition:0.6s;
+}
+
+.enter-btn.show{
+  opacity:1;
+  transform:translateY(0);
+}
+
+.enter-btn:hover{
+  background:white;
+  color:black;
+  transform:scale(1.05);
+}
+
+
+/* ===== MAIN ===== */
+.main{
+  min-height:100vh;
+  background:linear-gradient(-45deg,#ff4e91,#8e44ad,#6c5ce7,#ff7675);
+  background-size:300% 300%;
+  animation:gradientMove 15s ease infinite;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  padding:40px 15px;
+  text-align:center;
+}
+
+@keyframes gradientMove{
+  0%{background-position:0% 50%;}
+  50%{background-position:100% 50%;}
+  100%{background-position:0% 50%;}
+}
+
+.container{max-width:900px;width:100%;}
+.glow-name{font-size:clamp(28px,5vw,48px);margin-bottom:40px}
+
+/* ===== SLIDER ===== */
+.slider{position:relative;overflow:hidden;border-radius:20px;height:400px;margin-bottom:20px;}
+.slides{display:flex;transition:transform 0.8s ease;}
+.slide{min-width:100%}
+.slide img{width:100%;height:400px;object-fit:cover;border-radius:20px}
+
+.prev,.next{
+  position:absolute;top:50%;transform:translateY(-50%);
+  background:rgba(0,0,0,0.5);
+  padding:10px 15px;border-radius:50%;cursor:pointer;
+}
+.prev{left:15px}.next{right:15px}
+
+.dots{margin-top:15px}
+.dot{
+  height:8px;width:8px;background:#ccc;border-radius:50%;
+  display:inline-block;margin:0 6px;cursor:pointer;
+}
+.dot.active{background:white;transform:scale(1.4)}
+
+.glass-box{
+  background:rgba(255,255,255,0.2);
+  backdrop-filter:blur(15px);
+  padding:25px;border-radius:20px;margin:30px 0;
+}
+
+/* ===== BUTTONS ===== */
+button{
+  padding:12px 30px;
+  border-radius:50px;
+  border:none;
+  cursor:pointer;
+  margin:10px;
+  font-weight:600;
+  transition:all 0.3s ease;
+}
+
+/* Surprise */
+button:first-of-type{
+  background:white;
+  color:#ff4e91;
+}
+button:first-of-type:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 25px rgba(255,78,145,0.4);
+}
+
+/* Professional Note Button */
+.note-btn{
+  background:linear-gradient(135deg,#ff4e91,#6c5ce7);
+  color:white;
+}
+.note-btn:hover{
+  transform:translateY(-3px);
+  box-shadow:0 10px 25px rgba(108,92,231,0.4);
+}
+
+/* ===== CELEBRATION MODE ===== */
+#celebrationOverlay{
+  position:fixed;
+  inset:0;
+  background:rgba(0,0,0,0.92);
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  z-index:10000;
+  animation:fadeInOverlay 0.5s ease forwards;
+}
+@keyframes fadeInOverlay{
+  from{opacity:0;}
+  to{opacity:1;}
+}
+.celebration-text{
+  font-size:clamp(40px,8vw,90px);
+  font-weight:700;
+  text-align:center;
+  color:white;
+  text-shadow:
+    0 0 20px #ff4e91,
+    0 0 40px #ff7675,
+    0 0 60px #6c5ce7;
+  animation:scaleIn 0.8s ease forwards;
+}
+@keyframes scaleIn{
+  from{transform:scale(0.5);opacity:0;}
+  to{transform:scale(1);opacity:1;}
+}
+.fade-out{
+  animation:fadeOutOverlay 1s ease forwards;
+}
+@keyframes fadeOutOverlay{
+  to{opacity:0;}
+}
+
+/* ===== PROFESSIONAL MODAL ===== */
+/* ===== PROFESSIONAL MODAL (IMPROVED) ===== */
+.modal{
+  position:fixed;
+  inset:0;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  background:rgba(0,0,0,0.6);
+  backdrop-filter:blur(10px);
+  opacity:0;
+  visibility:hidden;
+  transition:all 0.4s ease;
+  z-index:10001;
+  padding:20px;
+}
+
+.modal.show{
+  opacity:1;
+  visibility:visible;
+}
+
+.modal-content{
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(25px);
+  border:1px solid rgba(255,255,255,0.2);
+  padding:30px;
+  border-radius:20px;
+  width:100%;
+  max-width:500px;
+  max-height:80vh;
+  overflow-y:auto;
+  text-align:left;
+  color:white;
+  position:relative;
+  transform:translateY(40px);
+  opacity:0;
+  transition:all 0.4s ease;
+}
+
+.modal.show .modal-content{
+  transform:translateY(0);
+  opacity:1;
+}
+
+.modal-content h2{
+  margin-bottom:20px;
+  text-align:center;
+}
+
+.modal-content p{
+  line-height:1.8;
+  font-size:15px;
+}
+
+.close-btn{
+  position:absolute;
+  top:15px;
+  right:18px;
+  font-size:18px;
+  cursor:pointer;
+  opacity:0.7;
+  transition:0.3s;
+}
+
+.close-btn:hover{
+  opacity:1;
+  transform:rotate(90deg);
+}
+
+
+.cursor{border-right:2px solid white;animation:blink 0.7s infinite}
+@keyframes blink{50%{border-color:transparent}}
+
+/* ===== RESPONSIVE DESIGN ===== */
+
+@media (max-width:768px){
+
+  .container{
+    padding:0 10px;
+  }
+
+  .glass-box{
+    padding:20px;
+    font-size:14px;
+  }
+
+  button{
+    width:100%;
+    max-width:300px;
+  }
+
+  .prev, .next{
+    padding:8px 12px;
+  }
+
+}
+
+@media (max-width:480px){
+
+  .intro-typing{
+    font-size:20px;
+  }
+
+  .loading-container{
+    width:200px;
+  }
+
+  .modal-content{
+    padding:20px;
+    font-size:14px;
+  }
+
+}
+
+</style>
+</head>
+<body>
+
+<div class="intro" id="intro">
+  <div class="intro-typing" id="introTyping"></div>
+
+  <div class="loading-container">
+    <div class="loading-bar" id="loadingBar"></div>
+  </div>
+
+  <div class="countdown" id="countdown"></div>
+
+  <button class="enter-btn" id="enterBtn" onclick="enterSite()">✨ Enter ✨</button>
+</div>
+
+
+<div class="main">
+<div class="container">
+
+<div class="glow-name">🎂 Waras Mubarak SAMINA 🎂</div>
+
+<div class="slider">
+<div class="slides" id="slides">
+<div class="slide"><img src="./images/photo1.jpeg"></div>
+<div class="slide"><img src="./images/photo2.jpeg"></div>
+<div class="slide"><img src="./images/photo3.jpeg"></div>
+<div class="slide"><img src="./images/photo4.jpeg"></div>
+<div class="slide"><img src="./images/photo5.jpeg"></div>
+<div class="slide"><img src="./images/photo6.jpeg"></div>
+<div class="slide"><img src="./images/photo7.jpeg"></div>
+<div class="slide"><img src="./images/photo8.jpeg"></div>
+</div>
+<div class="prev" onclick="moveSlide(-1)">❮</div>
+<div class="next" onclick="moveSlide(1)">❯</div>
+</div>
+
+<div class="dots" id="dots"></div>
+
+<div class="glass-box" id="typewriter"></div>
+
+<button onclick="celebrate()">🎁 Surprise</button>
+<button class="note-btn" onclick="openNote()">💌 Read Special Note</button>
+
+</div>
+</div>
+
+<div class="modal" id="modal">
+  <div class="modal-content">
+    <div class="close-btn" onclick="closeNote()">✕</div>
+    <h2>💌 A Special Note</h2>
+    <p>
+     Today, it’s not just about celebrating another year of life —
+it’s about celebrating you.
+<br><br>
+     The way you make everyone laugh without holding anything back.
+The way you’re there for the people who matter most.
+The way you make the ordinary moments of life unforgettable.<br><br>
+
+     You’ve grown so much, not just with age,
+but with strength, wisdom, and the kind of confidence
+that allows people to feel secure with you.<br><br>
+
+Through the chaos, the late-night conversations,
+the random jokes, the serious talks,
+and even the moments we didn’t understand at the time,
+you’ve remained authentic.<br><br>
+
+And that, my friend, is something rare.<br><br>
+
+Here’s to hoping that this year gives you all the things
+you deserve: peace when you need rest,
+courage when you need strength,
+success with all the things you work hard for,
+and happiness with the little things life has to offer.<br><br>
+
+
+Whatever life takes us through,
+just know that I’m grateful for you —
+for your presence, your energy, and your sparkle.
+Keep shining.
+Keep dreaming.
+Keep being unapologetically you.<br><br>
+
+Waras Mubarak.
+
+    </p>
+  </div>
+</div>
+
+<audio id="music" loop>
+<source src="birthday-music.mp3" type="audio/mp3">
+</audio>
+
+<script>
+/* ===== INTRO CINEMATIC SEQUENCE ===== */
+
+const typingText = "Hi... Are you ready? 👀";
+const typingElement = document.getElementById("introTyping");
+const loadingBar = document.getElementById("loadingBar");
+const countdownElement = document.getElementById("countdown");
+const enterBtn = document.getElementById("enterBtn");
+
+let tIndex = 0;
+
+// Typing Effect
+function typeIntro(){
+  if(tIndex < typingText.length){
+    typingElement.textContent += typingText.charAt(tIndex);
+    tIndex++;
+    setTimeout(typeIntro, 60);
+  } else {
+    setTimeout(startLoading, 800);
+  }
+}
+
+// Loading Bar Animation
+function startLoading(){
+  let width = 0;
+  const interval = setInterval(()=>{
+    width++;
+    loadingBar.style.width = width + "%";
+    if(width >= 100){
+      clearInterval(interval);
+      setTimeout(startCountdown, 500);
+    }
+  },20);
+}
+
+// Countdown
+function startCountdown(){
+  let count = 3;
+  countdownElement.style.opacity = 1;
+  countdownElement.textContent = count;
+
+  const counter = setInterval(()=>{
+    count--;
+    if(count > 0){
+      countdownElement.textContent = count;
+    } else {
+      clearInterval(counter);
+      countdownElement.textContent = "Let's Go! ";
+      setTimeout(()=>{
+        enterBtn.classList.add("show");
+      },800);
+    }
+  },1000);
+}
+
+// Start intro sequence
+setTimeout(typeIntro, 500);
+
+
+function enterSite(){
+  document.getElementById("intro").style.display="none";
+  document.getElementById("music").play();
+}
+
+/* Slider */
+let index=0;
+const slides=document.querySelectorAll(".slide");
+const wrapper=document.getElementById("slides");
+const dotsContainer=document.getElementById("dots");
+
+slides.forEach((_,i)=>{
+  let dot=document.createElement("span");
+  dot.classList.add("dot");
+  if(i===0) dot.classList.add("active");
+  dot.onclick=()=>goToSlide(i);
+  dotsContainer.appendChild(dot);
+});
+function updateSlider(){
+  wrapper.style.transform=`translateX(-${index*100}%)`;
+  document.querySelectorAll(".dot").forEach(d=>d.classList.remove("active"));
+  document.querySelectorAll(".dot")[index].classList.add("active");
+}
+function moveSlide(dir){index=(index+dir+slides.length)%slides.length;updateSlider();}
+function goToSlide(i){index=i;updateSlider();}
+setInterval(()=>moveSlide(1),5000);
+
+/* Typewriter */
+const messages=[
+"Another year older, but still the same legend 😎",
+"My partner in crime 🔥",
+"Let’s make more unforgettable memories 🎂✨"
+];
+let i=0,j=0,isDeleting=false;
+const box=document.getElementById("typewriter");
+function typeEffect(){
+const text=messages[i];
+if(!isDeleting){
+box.innerHTML=text.substring(0,j++)+"<span class='cursor'></span>";
+if(j>text.length){isDeleting=true;setTimeout(typeEffect,1500);return;}
+}else{
+box.innerHTML=text.substring(0,j--)+"<span class='cursor'></span>";
+if(j<0){isDeleting=false;i=(i+1)%messages.length;}
+}
+setTimeout(typeEffect,60);
+}
+typeEffect();
+
+/* Celebration */
+function celebrate(){
+  const overlay=document.createElement("div");
+  overlay.id="celebrationOverlay";
+  overlay.innerHTML=`<div class="celebration-text">🎉 WARAS MUBARAK SAMINA 🎉</div>`;
+  document.body.appendChild(overlay);
+
+  for(let i=0;i<6;i++){
+    setTimeout(()=>{
+      confetti({
+        particleCount:400,
+        spread:150,
+        origin:{x:Math.random(),y:Math.random()*0.6}
+      });
+    },i*400);
+  }
+
+  setTimeout(()=>{
+    overlay.classList.add("fade-out");
+    setTimeout(()=>overlay.remove(),1000);
+  },4000);
+}
+
+function openNote(){document.getElementById("modal").classList.add("show");}
+function closeNote(){document.getElementById("modal").classList.remove("show");}
+</script>
+
+</body>
+</html>
